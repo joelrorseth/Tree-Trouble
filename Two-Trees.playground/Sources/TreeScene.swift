@@ -48,7 +48,7 @@ public class TreeScene: SKScene {
     
     // =====================================
     // =====================================
-    public func addNode(at point: CGPoint, value: Int, radius: CGFloat, color: SKColor, dynamic: Bool = false) {
+    public func drawNode(at point: CGPoint, value: Int, radius: CGFloat, color: SKColor, dynamic: Bool = false) {
         
         // Create Node and set position in scene
         let sprite = Node()
@@ -82,7 +82,7 @@ public class TreeScene: SKScene {
         }
         
         // Add node now that traversal has exhausted itself to this Node
-        addNode(at: point, value: temp.value, radius: nodeRadius, color: nodeColor)
+        drawNode(at: point, value: temp.value, radius: nodeRadius, color: nodeColor)
     }
     
     // =====================================
