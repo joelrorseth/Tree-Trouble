@@ -40,18 +40,17 @@ public class TreeScene: SKScene {
         tree.insert(value: 10)
         tree.insert(value: 9)
         tree.insert(value: 1)
-        tree.insert(value: 11) // cutoff
-        //tree.insert(value: 13)
-        //tree.insert(value: 6)
-        //tree.insert(value: 3)
-        //tree.insert(value: 8)
+        tree.insert(value: 11)
+//        tree.insert(value: 13)
+//        tree.insert(value: 6)
+//        tree.insert(value: 3)
+//        tree.insert(value: 8)
         
+        // Test by displaying the tree in the top half of view
         let topHalfView = CGSize(width: self.size.width, height: self.size.height / 2)
         let treeHeight = tree.height()
-        print(treeHeight)
 
         // Testing: Draw binary tree created above
-        //self.drawBST(tree: tree, point: CGPoint(x: 150, y: 300), offset: CGFloat(tree.height()))
         self.drawBST(tree: tree,
                      within: topHalfView,
                      at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 30),
@@ -80,7 +79,8 @@ public class TreeScene: SKScene {
         let temp = tree
             
         let nodeRadius = CGFloat(size.width / (2 * pow(2, CGFloat(originalHeight + 1))))
-        let spacingForDepth = CGFloat(size.width / (2 * pow(2, CGFloat(temp.depth() + 1))))
+        let spacingWidth = CGFloat(size.width / (2 * pow(2, CGFloat(temp.depth() + 1))))
+        let spacingHeight = size.height / CGFloat(originalHeight + 1)
         
         
         
@@ -89,7 +89,7 @@ public class TreeScene: SKScene {
         if (temp.hasLeftChild) {
             drawBST(tree: temp.left!,
                     within: size,
-                    at: CGPoint(x: point.x - spacingForDepth, y: point.y - 60),
+                    at: CGPoint(x: point.x - spacingWidth, y: point.y - spacingHeight),
                     offset: (offset - 1),
                     originalHeight: originalHeight)
         }
@@ -98,7 +98,7 @@ public class TreeScene: SKScene {
         if (temp.hasRightChild) {
             drawBST(tree: temp.right!,
                     within: size,
-                    at: CGPoint(x: point.x + spacingForDepth, y: point.y - 60),
+                    at: CGPoint(x: point.x + spacingWidth, y: point.y - spacingHeight),
                     offset: (offset - 1),
                     originalHeight: originalHeight)
         }
