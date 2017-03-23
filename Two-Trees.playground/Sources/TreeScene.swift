@@ -33,29 +33,32 @@ public class TreeScene: SKScene {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         self.backgroundColor = SKColor.white
         
-        // Test: create a binary tree
-        let tree = BinarySearchTree<Int>(value: 7)
-        tree.insert(value: 2)
-        tree.insert(value: 5)
-        tree.insert(value: 10)
-        tree.insert(value: 9)
-        tree.insert(value: 1)
-        tree.insert(value: 11)
+//        // Test: create a binary tree
+//        let tree = BinarySearchTree<Int>(value: 7)
+//        tree.insert(value: 2)
+//        tree.insert(value: 5)
+//        tree.insert(value: 10)
+//        tree.insert(value: 9)
+//        tree.insert(value: 1)
+//        tree.insert(value: 11)
 //        tree.insert(value: 13)
 //        tree.insert(value: 6)
 //        tree.insert(value: 3)
 //        tree.insert(value: 8)
+//        
+//        // Test by displaying the tree in the top half of view
+//        let topHalfView = CGSize(width: self.size.width, height: self.size.height / 2)
+//        let treeHeight = tree.height()
+//
+//        // Testing: Draw binary tree created above
+//        self.drawBST(tree: tree,
+//                     within: topHalfView,
+//                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 30),
+//                     offset: CGFloat(tree.height()),
+//                     originalHeight: treeHeight)
         
-        // Test by displaying the tree in the top half of view
-        let topHalfView = CGSize(width: self.size.width, height: self.size.height / 2)
-        let treeHeight = tree.height()
+        createRandomBST(withCount: 3)
 
-        // Testing: Draw binary tree created above
-        self.drawBST(tree: tree,
-                     within: topHalfView,
-                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 30),
-                     offset: CGFloat(tree.height()),
-                     originalHeight: treeHeight)
     }
     
     // =====================================
@@ -69,6 +72,69 @@ public class TreeScene: SKScene {
         
         self.addChild(sprite)
     }
+    
+    // =====================================
+    // =====================================
+    func createRandomBST(withCount count: Int) {
+        
+        let nodeCount = Int(NSDecimalNumber(decimal: pow(2, count + 1))) - 1
+        var array: [Int] = []
+        
+        // Assign random numbers to a temp array
+        for _ in 0..<nodeCount {
+            array.append(Int(arc4random_uniform(100)))
+        }
+        
+        // Sort the array in preparation for balancing algorithm
+        array.sort()
+
+        // Reorder array to distribute as balanced / complete BST, copy back
+        let newOrder = sortForCompleteTree(array: array, index: 0)
+        for (index, value) in newOrder {
+            array[index] = value
+        }
+        
+    
+        // Create BST and insert sequentially with newly balanced array
+        let tree = BinarySearchTree<Int>(value: array[0])
+        for i in 1..<nodeCount {
+            tree.insert(value: array[i])
+        }
+        
+        let topHalfView = CGSize(width: self.size.width, height: self.size.height / 2)
+        
+        self.drawBST(tree: tree,
+                     within: topHalfView,
+                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 30),
+                     offset: CGFloat(tree.height()),
+                     originalHeight: tree.height())
+    }
+    
+    // =====================================
+    // =====================================
+    func sortForCompleteTree(array: [Int], index: Int) -> [Int : Int] {
+        
+        var array = array
+        let midpoint = array.count / 2
+        var result: [Int:Int] = [:]
+        
+        if (midpoint == 0) {
+            return [index: array[midpoint]]
+        }
+        
+        // Divide array in half and call recursively
+        let firstHalf = Array(array.prefix(upTo: midpoint))
+        let secondHalf = Array(array.suffix(from: midpoint + 1))
+        
+        // The index of the node must increment based on left and right
+        result += sortForCompleteTree(array: firstHalf, index: (index*2) + 1)
+        result += sortForCompleteTree(array: secondHalf, index: (2*index) + 2)
+        
+        // Result will hold key,value pairs corresponding to an array index
+        result += [index:array[midpoint]]
+        return result
+    }
+    
     
     // =====================================
     // =====================================
@@ -154,5 +220,11 @@ public class TreeScene: SKScene {
         if let _ = touches.first {
             movableNode = nil
         }
+    }
+}
+
+func += <K, V> ( left: inout [K:V], right: [K:V]) {
+    for (k, v) in right {
+        left.updateValue(v, forKey: k)
     }
 }
