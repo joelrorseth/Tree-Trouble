@@ -82,7 +82,7 @@ public class BSTScene: SKScene {
         
         self.drawBST(tree: tree,
                      within: topHalfView,
-                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 20),
+                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 30),
                      offset: CGFloat(tree.height()),
                      originalHeight: tree.height())
     }
