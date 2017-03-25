@@ -1,6 +1,6 @@
 import SpriteKit
 
-public class TreeView: UIViewController {
+public class GameView: UIViewController {
     
     // A container view for the SKScene
     var gameView: SKView!
@@ -14,6 +14,8 @@ public class TreeView: UIViewController {
         self.view = backgroundView
         
         gameView = SKView()
+        gameView.showsFPS = true
+        gameView.showsNodeCount = true
         
         gameView.translatesAutoresizingMaskIntoConstraints = false
         gameView.backgroundColor = UIColor.clear
@@ -58,32 +60,32 @@ public class TreeView: UIViewController {
         centerVertically.priority = UILayoutPriority(1000.0)
         
         let aspectRatio = NSLayoutConstraint(item: gameView,
-                                             attribute: .height,
-                                             relatedBy: .equal,
-                                             toItem: gameView,
-                                             attribute: .width,
-                                             multiplier: 1.0,
-                                             constant: 0.0)
+                                                  attribute: .height,
+                                                  relatedBy: .equal,
+                                                  toItem: gameView,
+                                                  attribute: .width,
+                                                  multiplier: 1.0,
+                                                  constant: 0.0)
         aspectRatio.priority = UILayoutPriority(1000.0)
         
         let width = NSLayoutConstraint(item: gameView,
-                                       attribute: .width,
-                                       relatedBy: .lessThanOrEqual,
-                                       toItem: self.view,
-                                       attribute: .width,
-                                       multiplier: 1.0,
-                                       constant: 0.0)
+                                             attribute: .width,
+                                             relatedBy: .lessThanOrEqual,
+                                             toItem: self.view,
+                                             attribute: .width,
+                                             multiplier: 1.0,
+                                             constant: 0.0)
         width.priority = UILayoutPriority(1000.0)
         
         let height = NSLayoutConstraint(item: gameView,
-                                        attribute: .height,
-                                        relatedBy: .lessThanOrEqual,
-                                        toItem: self.view,
-                                        attribute: .height,
-                                        multiplier: 1.0,
-                                        constant: 0.0)
+                                       attribute: .height,
+                                       relatedBy: .lessThanOrEqual,
+                                       toItem: self.view,
+                                       attribute: .height,
+                                       multiplier: 1.0,
+                                       constant: 0.0)
         height.priority = UILayoutPriority(1000.0)
-        
+
         
         // Add constraints to the view to resize gameView dynamically
         // These constraints are especially important on the iPad
@@ -93,13 +95,13 @@ public class TreeView: UIViewController {
     // =====================================
     // =====================================
     public override func viewDidAppear(_ animated: Bool) {
-        
+
         // Scene must be setup after gameView size has been determined
-        let scene = BSTScene(size:
+        let scene = GameScene(size:
             CGSize(
                 width: gameView.frame.size.width, height: gameView.frame.size.height
         ))
-        
+                
         // Scene will be identical in size to gameView
         scene.scaleMode = .aspectFit
         
