@@ -82,7 +82,14 @@ public class TreeScene: SKScene {
         
         // Assign random numbers to a temp array
         for _ in 0..<nodeCount {
-            array.append(Int(arc4random_uniform(100)))
+            var rand = Int(arc4random_uniform(100))
+            
+            // If array already has this value, remove duplicate node
+            while (array.contains(rand)) {
+                rand = Int(arc4random_uniform(100))
+            }
+            
+            array.append(rand)
         }
         
         // Sort the array in preparation for balancing algorithm
