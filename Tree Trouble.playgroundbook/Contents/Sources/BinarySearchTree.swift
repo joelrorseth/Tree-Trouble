@@ -142,4 +142,27 @@ public class BinarySearchTree<T: Comparable> {
         let rightBST = right?.isBST(minValue: value, maxValue: maxValue) ?? true
         return leftBST && rightBST
     }
+    
+    // =====================================
+    // Return array representation (inorder trav)
+    // =====================================
+    public func arrayRepresentation() -> [T] {
+        
+        var array = [T]()
+        
+        // Left node
+        if let leftNode = left {
+            array += leftNode.arrayRepresentation()
+        }
+        
+        // Root node
+        array.append(value)
+        
+        // Right node
+        if let rightNode = right {
+            array += rightNode.arrayRepresentation()
+        }
+        
+        return array
+    }
 }

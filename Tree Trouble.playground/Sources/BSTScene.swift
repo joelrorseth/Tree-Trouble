@@ -4,7 +4,7 @@ import UIKit
 
 public class BSTScene: SKScene {
     
-    var background = SKSpriteNode(imageNamed: "background.jpg")
+    var background = SKSpriteNode(imageNamed: "background.png")
     var game: Game!
     
     // =====================================
@@ -17,18 +17,18 @@ public class BSTScene: SKScene {
         addChild(background)
     }
     
+    // MARK: Possibly delete
     // =====================================
     // =====================================
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: Possibly delete
     // =====================================
     // =====================================
     public override init(size: CGSize) {
         super.init(size: size)
-        
-        createRandomBST(withCount: 2)
     }
     
     // =====================================
@@ -42,6 +42,35 @@ public class BSTScene: SKScene {
         
         self.addChild(sprite)
     }
+    
+    // =====================================
+    // =====================================
+    func createTree(tree: BinarySearchTree<Int>) {
+
+        var arrayRepresentation = tree.arrayRepresentation()
+        arrayRepresentation.sort()
+        
+        // Reorder array to distribute as balanced / complete BST, copy back
+        let newOrder = sortForCompleteTree(array: arrayRepresentation, index: 0)
+        for (index, value) in newOrder {
+            arrayRepresentation[index] = value
+        }
+        
+        // Create BST and insert sequentially with newly balanced array
+        let newTree = BinarySearchTree<Int>(value: arrayRepresentation[0])
+        for i in 1..<(arrayRepresentation.count-1) {
+            newTree.insert(value: arrayRepresentation[i])
+        }
+        
+        
+        drawBST(tree: newTree,
+                within: CGSize(width: self.size.width,
+                               height: self.size.height),
+                at: CGPoint(x: self.size.width / 2, y: self.size.height - 30),
+                offset: CGFloat(tree.height()),
+                originalHeight: tree.height())
+    }
+    
     
     // =====================================
     // =====================================

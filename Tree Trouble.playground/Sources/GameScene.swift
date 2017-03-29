@@ -5,7 +5,7 @@ import UIKit
 public class GameScene: SKScene {
     
     var movableNode : SKNode?
-    var background = SKSpriteNode(imageNamed: "background.jpg")
+    var background = SKSpriteNode(imageNamed: "background.png")
     var game: Game!
     
     // =====================================

@@ -4,11 +4,23 @@
 //: ## How Do They Work?
 //: Each tree is made up of several interconnected nodes (represented as circles) that contain a value. Each node can have zero or one parent nodes (nodes connected above a node), and zero to two child nodes (connected below).
 
-//: ## But What Makes It A BST?
-//: The most important part of the Binary Search Tree is the ordering property. For every node, the value of each left child node is *less than* the value of itself, and the value of each right child node is *greater than* itself! Easy!
-
-//: [Next: How Do I Make One?](@next)
-
+//#-hidden-code
 import PlaygroundSupport
+//#-end-hidden-code
 
-PlaygroundPage.current.liveView = TreeView()
+//: Finish the code to create the tree
+let bst = BinarySearchTree<Int>(value:/*#-editable-code root node*/20/*#-end-editable-code*/)
+
+//: Add nodes into the tree!
+//#-editable-code placeholder text
+bst.insert(value: /*#-editable-code number*//*#-end-editable-code*/)
+
+
+
+
+//#-end-editable-code
+
+//#-hidden-code
+let bstView = BSTView(tree: bst)
+PlaygroundPage.current.liveView = bstView
+//#-end-hidden-code

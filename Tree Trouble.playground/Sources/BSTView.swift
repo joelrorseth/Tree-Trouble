@@ -1,9 +1,24 @@
 import SpriteKit
 
-public class TreeView: UIViewController {
+public class BSTView: UIViewController {
     
-    // A container view for the SKScene
     var gameView: SKView!
+    var binarySearchTree: BinarySearchTree<Int>?
+    
+    // =====================================
+    // =====================================
+    public init (tree: BinarySearchTree<Int>) {
+        super.init(nibName: nil, bundle: nil)
+        self.binarySearchTree = tree
+    }
+
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+
+    
     
     // =====================================
     // =====================================
@@ -72,7 +87,7 @@ public class TreeView: UIViewController {
                                        toItem: self.view,
                                        attribute: .width,
                                        multiplier: 1.0,
-                                       constant: 0.0)
+                                       constant: 0)
         width.priority = UILayoutPriority(1000.0)
         
         let height = NSLayoutConstraint(item: gameView,
@@ -81,7 +96,7 @@ public class TreeView: UIViewController {
                                         toItem: self.view,
                                         attribute: .height,
                                         multiplier: 1.0,
-                                        constant: 0.0)
+                                        constant: 0)
         height.priority = UILayoutPriority(1000.0)
         
         
@@ -95,13 +110,14 @@ public class TreeView: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         
         // Scene must be setup after gameView size has been determined
-        let scene = BSTScene(size:
-            CGSize(
-                width: gameView.frame.size.width, height: gameView.frame.size.height
+        let scene = BSTScene(size: CGSize(
+                width: gameView.frame.size.width,
+                height: gameView.frame.size.height
         ))
         
         // Scene will be identical in size to gameView
         scene.scaleMode = .aspectFit
+        scene.createTree(tree: self.binarySearchTree!)
         
         self.gameView.presentScene(scene)
     }
