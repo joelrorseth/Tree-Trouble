@@ -28,7 +28,7 @@ class Node: SKSpriteNode {
         self.physicsBody!.restitution = 0.7
         self.physicsBody!.affectedByGravity = dynamic
         
-        self.zPosition = 1.0
+        self.zPosition = 5
         
         // Layer the text and circle node into this NodeSprite
         self.addChild(circle)

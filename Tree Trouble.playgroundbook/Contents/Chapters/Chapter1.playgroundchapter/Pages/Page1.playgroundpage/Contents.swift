@@ -9,18 +9,17 @@ import PlaygroundSupport
 //#-end-hidden-code
 
 //: Finish the code to create the tree
-let bst = BinarySearchTree<Int>(value:/*#-editable-code root node*/20/*#-end-editable-code*/)
+var bst = BinarySearchTree<Int>(value:/*#-editable-code root node*/20/*#-end-editable-code*/)
 
 //: Add nodes into the tree!
-//#-editable-code placeholder text
+bst.insert(value: /*#-editable-code number*//*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*//*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*//*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*//*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*//*#-end-editable-code*/)
 bst.insert(value: /*#-editable-code number*//*#-end-editable-code*/)
 
-
-
-
-//#-end-editable-code
-
 //#-hidden-code
-let bstView = BSTView(tree: bst)
+var bstView = BSTView(tree: bst)
 PlaygroundPage.current.liveView = bstView
 //#-end-hidden-code

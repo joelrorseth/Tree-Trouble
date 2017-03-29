@@ -12,9 +12,6 @@
 import PlaygroundSupport
 
 var bst = BinarySearchTree(array: [5,3,2,4,7,6,8])
+
 var bstView = BSTView(tree: bst)
-
-
 PlaygroundPage.current.liveView = bstView
-
-
