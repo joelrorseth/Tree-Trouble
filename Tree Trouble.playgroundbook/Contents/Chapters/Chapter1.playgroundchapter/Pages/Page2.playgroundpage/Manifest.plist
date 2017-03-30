@@ -7,7 +7,7 @@
 	<key>Name</key>
 	<string>The Ordering Property</string>
 	<key>LiveViewMode</key>
-	<string>HiddenByDefault</string>
+	<string>VisibleByDefault</string>
 	<key>LiveViewEdgeToEdge</key>
 	<true/>
 </dict>
