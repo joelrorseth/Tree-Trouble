@@ -144,25 +144,20 @@ public class BinarySearchTree {
     }
     
     // =====================================
-    // Return array representation (inorder trav)
+    // Search / Find node with value
     // =====================================
-    public func arrayRepresentation() -> [Int] {
+    public func findNode(value: Int) -> BinarySearchTree? {
+        var nodeToCheck: BinarySearchTree? = self
         
-        var array = [Int]()
-        
-        // Left node
-        if let leftNode = left {
-            array += leftNode.arrayRepresentation()
+        while case let currentNode? = nodeToCheck {
+            if value < currentNode.value {
+                nodeToCheck = currentNode.left
+            } else if value > currentNode.value {
+                nodeToCheck = currentNode.right
+            } else {
+                return nodeToCheck
+            }
         }
-        
-        // Root node
-        array.append(value)
-        
-        // Right node
-        if let rightNode = right {
-            array += rightNode.arrayRepresentation()
-        }
-        
-        return array
+        return nil
     }
 }

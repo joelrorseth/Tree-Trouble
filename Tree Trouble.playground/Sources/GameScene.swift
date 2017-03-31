@@ -1,9 +1,16 @@
 import SpriteKit
 import Social
+import GameplayKit
 
 public class GameScene: SKScene {
     
-    var movableNode : SKNode?
+    var selectedNode : Node?
+    var currentRandomSkewedValue: Int?
+    var currentRandomOriginalValue: Int?
+    
+    var currentNodes = [Node]()
+    var currentEdges = [SKShapeNode]()
+    
     var background = SKSpriteNode(imageNamed: "background.png")
     var countdownNode = SKLabelNode(fontNamed: "Arial")
     var scoreNode = SKLabelNode(fontNamed: "Arial")
@@ -51,7 +58,7 @@ public class GameScene: SKScene {
                 self.countdownValue -= 1
             } else {
                 self.gameOver(score: self.score)
-                self.score = 0
+                //self.score = 0
                 self.removeAction(forKey: "countdown")
             }
         })
@@ -78,7 +85,7 @@ public class GameScene: SKScene {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         self.backgroundColor = SKColor.white
         
-        createRandomBST(withCount: 3)
+        presentNextLevel()
     }
     
     // =====================================
@@ -86,6 +93,10 @@ public class GameScene: SKScene {
     func createRandomBST(withCount count: Int) {
         
         let nodeCount = Int(NSDecimalNumber(decimal: pow(2, count + 1))) - 1
+        
+        // Choose position of node that will be randomly skewed
+        let randomNodePosition = GKARC4RandomSource().nextInt(upperBound: nodeCount - 1)
+        
         var array: [Int] = []
         
         // Assign random numbers to a temp array
@@ -109,18 +120,40 @@ public class GameScene: SKScene {
             array[index] = value
         }
         
-        
         // Create BST and insert sequentially with newly balanced array
         let tree = BinarySearchTree(value: array[0])
         for i in 1..<nodeCount {
             tree.insert(value: array[i])
         }
         
+        
+        // Set skewed value to the value of randomly selected node
+        currentRandomOriginalValue = array[randomNodePosition]
+        
+        // Obtain the tree object for the selected incorrect node
+        let nodeToSkew = tree.findNode(value: currentRandomOriginalValue!)
+        let parentValue = (nodeToSkew?.parent?.value)!
+        
+        if (parentValue > currentRandomOriginalValue!) {
+            
+            // Chosen node it to the left of parent
+            // For correctness, we must generate a skewed value greater than the parent
+            currentRandomSkewedValue = GKARC4RandomSource().nextInt(upperBound: 99 - parentValue) + (parentValue + 1)
+        } else {
+            
+            // Chosen node is to the right
+            // Generate a skewed value that is less than parent to be incorrect
+            currentRandomSkewedValue = GKARC4RandomSource().nextInt(upperBound: parentValue - 1) + 1
+        }
+        
+        print("Generated \(currentRandomSkewedValue!) as next incorrect node")
+
+        
         let topHalfView = CGSize(width: self.size.width, height: self.size.height / 2)
         
         self.drawBST(tree: tree,
                      within: topHalfView,
-                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 30),
+                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 60),
                      offset: CGFloat(tree.height()),
                      originalHeight: tree.height())
     }
@@ -168,6 +201,7 @@ public class GameScene: SKScene {
         shape.lineWidth = width
         shape.zPosition = 4
         
+        self.currentEdges.append(shape)
         addChild(shape)
     }
     
@@ -180,6 +214,7 @@ public class GameScene: SKScene {
         sprite.setup(value: value, radius: radius, color: color, dynamic: dynamic)
         sprite.position = point
         
+        self.currentNodes.append(sprite)
         self.addChild(sprite)
     }
     
@@ -226,19 +261,68 @@ public class GameScene: SKScene {
                     originalHeight: originalHeight)
         }
         
+        // If this is the randomly selected node, skew its value
+        
         // Add node now that traversal has exhausted itself to this Node
-        drawNode(at: point, value: temp.value, radius: nodeRadius, color: nodeColor)
+        if (tree.value == currentRandomOriginalValue) {
+            
+            drawNode(at: point, value: currentRandomSkewedValue!, radius: nodeRadius, color: nodeColor)
+            
+        } else {
+            drawNode(at: point, value: temp.value, radius: nodeRadius, color: nodeColor)
+        }
     }
+    
+    
     
     // =====================================
     // =====================================
     private func gameOver(score: Int) {
         
+        // Stop the countdown timer
+        self.removeAction(forKey: "countdown")
+        
         if let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
-            vc.setInitialText("I fixed \(score) Binary Search Trees in 30 seconds in the Trouble in the Trees Challenge!")
             vc.add(UIImage(named: "background")!)
+            vc.setInitialText("I fixed \(score) Binary Search Trees in 30 seconds in the Trouble in the Trees Challenge!")
+            
+            // Extract rootViewController to present the SLComposeViewController (social media posting)
             self.view?.window?.rootViewController?.present(vc, animated: true, completion: nil)
         }
+    }
+    
+    // =====================================
+    // =====================================
+    private func checkSelection(value: Int) {
+        
+        // If correct guess, increment score and load next level
+        if (currentRandomSkewedValue == value) {
+            score += 1
+            presentNextLevel()
+            return
+        }
+        
+        // At this point the guess was wrong; the challenge is over!
+        gameOver(score: score)
+    }
+    
+    // =====================================
+    // =====================================
+    private func presentNextLevel() {
+        
+        // Generate random BST height between 2 and 4
+        let arc4 = GKARC4RandomSource()
+        let randomHeight = arc4.nextInt(upperBound: 3) + 2
+        
+        // Remove all node and edge sprites from the scene
+        for node in currentNodes { node.removeFromParent() }
+        for edge in currentEdges { edge.removeFromParent() }
+        
+        // Remove all references to nodes and edges from the past round
+        currentNodes.removeAll()
+        currentEdges.removeAll()
+        
+        createRandomBST(withCount: randomHeight)
     }
     
     // =====================================
@@ -252,41 +336,16 @@ public class GameScene: SKScene {
             let touchedNodes = self.nodes(at: location)
             
             if (touchedNodes.isEmpty) { return }
-            print("Touched x:\(location.x) y:\(location.y)")
             
-            let parentNode = touchedNodes[touchedNodes.count - 1]
-            if parentNode is Node {
-                movableNode = parentNode as! SKSpriteNode
-                movableNode!.position = location
+            // Check all nodes under point of contact just in case zPosition varies
+            for nodeUnderTouch in touchedNodes {
+                
+                // If this is a Node, check its value to determine if correct!
+                if nodeUnderTouch is Node {
+                    selectedNode = (nodeUnderTouch as! Node)
+                    checkSelection(value: (selectedNode?.value)!)
+                }
             }
-        }
-    }
-    
-    // =====================================
-    // =====================================
-    override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        if let touch = touches.first, movableNode != nil {
-            movableNode!.position = touch.location(in: self)
-            movableNode?.physicsBody?.isDynamic = false
-        }
-    }
-    
-    // =====================================
-    // =====================================
-    override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first, movableNode != nil {
-            movableNode!.position = touch.location(in: self)
-            movableNode?.physicsBody?.isDynamic = true
-            movableNode = nil
-        }
-    }
-    
-    // =====================================
-    // =====================================
-    override public func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let _ = touches.first {
-            movableNode = nil
         }
     }
 }

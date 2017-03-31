@@ -3,12 +3,16 @@ import SpriteKit
 
 class Node: SKSpriteNode {
     
+    public var value: Int!
+    
     func setup(value: Int, radius: CGFloat, color: SKColor, dynamic: Bool = false) {
         
+        self.value = value
+        
         // Draw a circle
-        let circle = SKShapeNode(circleOfRadius: radius) // 18
+        let circle = SKShapeNode(circleOfRadius: radius)
         circle.strokeColor = SKColor.black
-        circle.glowWidth = 1.0
+        circle.lineWidth = 1.0
         circle.fillColor = color
         
         // Establish the text (number value) of the Node
