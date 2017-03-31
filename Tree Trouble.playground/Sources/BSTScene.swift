@@ -34,7 +34,7 @@ public class BSTScene: SKScene {
     
     // =====================================
     // =====================================
-    func createTree(tree: BinarySearchTree<Int>) {
+    func createTree(tree: BinarySearchTree) {
         
         // TODO: Current balancing algorithm only compiles for complete trees
         // Determine course of action for handling automatic balancing (or not)
@@ -95,7 +95,7 @@ public class BSTScene: SKScene {
         
         
         // Create BST and insert sequentially with newly balanced array
-        let tree = BinarySearchTree<Int>(value: array[0])
+        let tree = BinarySearchTree(value: array[0])
         for i in 1..<nodeCount {
             tree.insert(value: array[i])
         }
@@ -169,7 +169,7 @@ public class BSTScene: SKScene {
     
     // =====================================
     // =====================================
-    public func drawBST(tree: BinarySearchTree<Int>, within size: CGSize, at point: CGPoint, offset: CGFloat, originalHeight: Int) {
+    public func drawBST(tree: BinarySearchTree, within size: CGSize, at point: CGPoint, offset: CGFloat, originalHeight: Int) {
 
         
         // Use temp placeholders for size and color

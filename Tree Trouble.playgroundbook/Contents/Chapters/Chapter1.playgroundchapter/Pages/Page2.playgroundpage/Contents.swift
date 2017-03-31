@@ -10,6 +10,6 @@
 //#-hidden-code
 
 import PlaygroundSupport
-PlaygroundPage.current.liveView = GameView()
+//PlaygroundPage.current.liveView =
 
 //#-end-hidden-code

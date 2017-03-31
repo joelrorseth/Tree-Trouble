@@ -10,4 +10,4 @@
 
 import PlaygroundSupport
 
-
+PlaygroundPage.current.liveView = GameView()

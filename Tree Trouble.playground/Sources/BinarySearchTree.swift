@@ -1,19 +1,19 @@
-public class BinarySearchTree<T: Comparable> {
+public class BinarySearchTree {
     
-    fileprivate(set) public var value: T
+    fileprivate(set) public var value: Int
     fileprivate(set) public var parent: BinarySearchTree?
     fileprivate(set) public var left: BinarySearchTree?
     fileprivate(set) public var right: BinarySearchTree?
     
     // =====================================
     // =====================================
-    public init(value: T) {
+    public init(value: Int) {
         self.value = value
     }
     
     // =====================================
     // =====================================
-    public convenience init(array: [T]) {
+    public convenience init(array: [Int]) {
         precondition(array.count > 0)
         self.init(value: array.first!)
         
@@ -25,7 +25,7 @@ public class BinarySearchTree<T: Comparable> {
     
     // =====================================
     // =====================================
-    public func insert(value: T) {
+    public func insert(value: Int) {
         
         // If less, insert into left branch recursively
         if value < self.value {
@@ -47,17 +47,17 @@ public class BinarySearchTree<T: Comparable> {
         }
     }
     
-    // =====================================
-    // =====================================
-    public func traverseInOrder(process: (T) -> Void) {
-        left?.traverseInOrder(process: process)
-        process(value)
-        right?.traverseInOrder(process: process)
-    }
+//    // =====================================
+//    // =====================================
+//    public func traverseInOrder(process: (T) -> Void) {
+//        left?.traverseInOrder(process: process)
+//        process(value)
+//        right?.traverseInOrder(process: process)
+//    }
     
     // =====================================
     // =====================================
-    public func traversePreOrder(process: (T) -> Void) {
+    public func traversePreOrder(process: (Int) -> Void) {
         process(value)
         left?.traversePreOrder(process: process)
         right?.traversePreOrder(process: process)
@@ -65,7 +65,7 @@ public class BinarySearchTree<T: Comparable> {
     
     // =====================================
     // =====================================
-    public func traversePostOrder(process: (T) -> Void) {
+    public func traversePostOrder(process: (Int) -> Void) {
         left?.traversePostOrder(process: process)
         right?.traversePostOrder(process: process)
         process(value)
@@ -135,7 +135,7 @@ public class BinarySearchTree<T: Comparable> {
     // =====================================
     // Important for the game (Validate correctness of BST)
     // =====================================
-    public func isBST(minValue: T, maxValue: T) -> Bool {
+    public func isBST(minValue: Int, maxValue: Int) -> Bool {
         
         if (value < minValue || value > maxValue) { return false }
         let leftBST = left?.isBST(minValue: minValue, maxValue: value) ?? true
@@ -146,9 +146,9 @@ public class BinarySearchTree<T: Comparable> {
     // =====================================
     // Return array representation (inorder trav)
     // =====================================
-    public func arrayRepresentation() -> [T] {
+    public func arrayRepresentation() -> [Int] {
         
-        var array = [T]()
+        var array = [Int]()
         
         // Left node
         if let leftNode = left {

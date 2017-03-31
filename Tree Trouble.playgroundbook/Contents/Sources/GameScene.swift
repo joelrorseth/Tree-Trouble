@@ -6,7 +6,14 @@ public class GameScene: SKScene {
     
     var movableNode : SKNode?
     var background = SKSpriteNode(imageNamed: "background.png")
+    var countdownNode = SKLabelNode(fontNamed: "Arial")
     var game: Game!
+    
+    var countdownValue: Int = 30 {
+        didSet {
+            countdownNode.text = "Time left: \(countdownValue)"
+        }
+    }
     
     // =====================================
     // =====================================
@@ -16,6 +23,26 @@ public class GameScene: SKScene {
         background.position = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
         background.scale(to: self.size)
         addChild(background)
+        
+        // Add countdown timer to the scene
+        countdownNode.fontColor = SKColor.white
+        countdownNode.fontSize = 20
+        countdownNode.position = CGPoint(x: 70, y: 20)
+        countdownNode.text = "Time left: \(countdownValue)"
+        addChild(countdownNode)
+        
+        let wait = SKAction.wait(forDuration: 1.0)
+        let block = SKAction.run({ [unowned self] in
+            
+            if self.countdownValue > 0 {
+                self.countdownValue -= 1
+            } else {
+                self.removeAction(forKey: "countdown")
+            }
+        })
+        
+        let sequence = SKAction.sequence([wait,block])
+        run(SKAction.repeatForever(sequence), withKey: "countdown")
     }
     
     // =====================================
@@ -69,7 +96,7 @@ public class GameScene: SKScene {
         
         
         // Create BST and insert sequentially with newly balanced array
-        let tree = BinarySearchTree<Int>(value: array[0])
+        let tree = BinarySearchTree(value: array[0])
         for i in 1..<nodeCount {
             tree.insert(value: array[i])
         }
@@ -143,7 +170,7 @@ public class GameScene: SKScene {
     
     // =====================================
     // =====================================
-    public func drawBST(tree: BinarySearchTree<Int>, within size: CGSize, at point: CGPoint, offset: CGFloat, originalHeight: Int) {
+    public func drawBST(tree: BinarySearchTree, within size: CGSize, at point: CGPoint, offset: CGFloat, originalHeight: Int) {
         
         
         // Use temp placeholders for size and color

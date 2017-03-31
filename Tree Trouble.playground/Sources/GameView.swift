@@ -14,9 +14,6 @@ public class GameView: UIViewController {
         self.view = backgroundView
         
         gameView = SKView()
-        gameView.showsFPS = true
-        gameView.showsNodeCount = true
-        
         gameView.translatesAutoresizingMaskIntoConstraints = false
         gameView.backgroundColor = UIColor.clear
         self.view.addSubview(gameView)

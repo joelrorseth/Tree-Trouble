@@ -3,11 +3,11 @@ import SpriteKit
 public class BSTView: UIViewController {
     
     var gameView: SKView!
-    var binarySearchTree: BinarySearchTree<Int>?
+    var binarySearchTree: BinarySearchTree?
     
     // =====================================
     // =====================================
-    public init (tree: BinarySearchTree<Int>) {
+    public init (tree: BinarySearchTree) {
         super.init(nibName: nil, bundle: nil)
         self.binarySearchTree = tree
     }
