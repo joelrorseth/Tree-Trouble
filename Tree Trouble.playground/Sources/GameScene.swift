@@ -1,17 +1,23 @@
-import PlaygroundSupport
 import SpriteKit
-import UIKit
+import Social
 
 public class GameScene: SKScene {
     
     var movableNode : SKNode?
     var background = SKSpriteNode(imageNamed: "background.png")
     var countdownNode = SKLabelNode(fontNamed: "Arial")
+    var scoreNode = SKLabelNode(fontNamed: "Arial")
     var game: Game!
     
     var countdownValue: Int = 30 {
         didSet {
             countdownNode.text = "Time left: \(countdownValue)"
+        }
+    }
+    
+    var score: Int = 0 {
+        didSet {
+            scoreNode.text = "Score: \(score)"
         }
     }
     
@@ -23,6 +29,13 @@ public class GameScene: SKScene {
         background.position = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
         background.scale(to: self.size)
         addChild(background)
+        
+        // Add score label to the scene
+        scoreNode.fontColor = SKColor.white
+        scoreNode.fontSize = 20
+        scoreNode.position = CGPoint(x: (self.scene?.size.width)! - 70, y: 20)
+        scoreNode.text = "Score: \(score)"
+        addChild(scoreNode)
         
         // Add countdown timer to the scene
         countdownNode.fontColor = SKColor.white
@@ -37,6 +50,8 @@ public class GameScene: SKScene {
             if self.countdownValue > 0 {
                 self.countdownValue -= 1
             } else {
+                self.gameOver(score: self.score)
+                self.score = 0
                 self.removeAction(forKey: "countdown")
             }
         })
@@ -217,8 +232,19 @@ public class GameScene: SKScene {
     
     // =====================================
     // =====================================
+    private func gameOver(score: Int) {
+        
+        if let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
+            vc.setInitialText("I fixed \(score) Binary Search Trees in 30 seconds in the Trouble in the Trees Challenge!")
+            vc.add(UIImage(named: "background")!)
+            self.view?.window?.rootViewController?.present(vc, animated: true, completion: nil)
+        }
+    }
+    
+    // =====================================
+    // =====================================
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-                
+        
         if let touch = touches.first {
             
             // Extract touch location and all nodes under this point
