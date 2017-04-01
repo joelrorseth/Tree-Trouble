@@ -1,4 +1,4 @@
-//: ## Challenge: Tree Trouble
+//: ## Tree Trouble Challenge
 //: Now that you have an understanding of how the Binary Search Tree works, put your skills to the test!
 
 /*:
