@@ -1,11 +1,8 @@
-import PlaygroundSupport
 import SpriteKit
-import UIKit
 
 public class BSTScene: SKScene {
     
     var background = SKSpriteNode(imageNamed: "background.png")
-    var game: Game!
     var nodePoints: [CGPoint] = []
     
     // =====================================
@@ -18,122 +15,17 @@ public class BSTScene: SKScene {
         addChild(background)
     }
     
-    // MARK: Possibly delete
-    // =====================================
-    // =====================================
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: Possibly delete
-    // =====================================
-    // =====================================
-    public override init(size: CGSize) {
-        super.init(size: size)
-    }
-    
     // =====================================
     // =====================================
     func createTree(tree: BinarySearchTree) {
         
-        // TODO: Current balancing algorithm only compiles for complete trees
-        // Determine course of action for handling automatic balancing (or not)
-        
-        
-        //        var arrayRepresentation = tree.arrayRepresentation()
-        //        arrayRepresentation.sort()
-        //
-        //        // Reorder array to distribute as balanced / complete BST, copy back
-        //        let newOrder = sortForCompleteTree(array: arrayRepresentation, index: 0)
-        //        for (index, value) in newOrder {
-        //            arrayRepresentation[index] = value
-        //        }
-        //
-        //        // Create BST and insert sequentially with newly balanced array
-        //        let newTree = BinarySearchTree<Int>(value: arrayRepresentation[0])
-        //        for i in 1..<(arrayRepresentation.count-1) {
-        //            newTree.insert(value: arrayRepresentation[i])
-        //        }
-        
-        
         drawBST(tree: tree,
                 within: CGSize(width: self.size.width,
                                height: self.size.height),
-                at: CGPoint(x: self.size.width / 2, y: self.size.height - 30),
+                at: CGPoint(x: self.size.width / 2, y: self.size.height - 80),
                 offset: CGFloat(tree.height()),
                 originalHeight: tree.height())
     }
-    
-    
-    // =====================================
-    // =====================================
-    func createRandomBST(withCount count: Int) {
-        
-        let nodeCount = Int(NSDecimalNumber(decimal: pow(2, count + 1))) - 1
-        var array: [Int] = []
-        
-        // Assign random numbers to a temp array
-        for _ in 0..<nodeCount {
-            var rand = Int(arc4random_uniform(100))
-            
-            // If array already has this value, remove duplicate node
-            while (array.contains(rand)) {
-                rand = Int(arc4random_uniform(100))
-            }
-            
-            array.append(rand)
-        }
-        
-        // Sort the array in preparation for balancing algorithm
-        array.sort()
-        
-        // Reorder array to distribute as balanced / complete BST, copy back
-        let newOrder = sortForCompleteTree(array: array, index: 0)
-        for (index, value) in newOrder {
-            array[index] = value
-        }
-        
-        
-        // Create BST and insert sequentially with newly balanced array
-        let tree = BinarySearchTree(value: array[0])
-        for i in 1..<nodeCount {
-            tree.insert(value: array[i])
-        }
-        
-        let topHalfView = CGSize(width: self.size.width, height: self.size.height / 2)
-        
-        self.drawBST(tree: tree,
-                     within: topHalfView,
-                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 30),
-                     offset: CGFloat(tree.height()),
-                     originalHeight: tree.height())
-    }
-    
-    // =====================================
-    // =====================================
-    func sortForCompleteTree(array: [Int], index: Int) -> [Int : Int] {
-        
-        var array = array
-        let midpoint = array.count / 2
-        var result: [Int:Int] = [:]
-        
-        if (midpoint == 0) {
-            return [index: array[midpoint]]
-        }
-        
-        // Divide array in half and call recursively
-        let firstHalf = Array(array.prefix(upTo: midpoint))
-        let secondHalf = Array(array.suffix(from: midpoint + 1))
-        
-        // The index of the node must increment based on left and right
-        result += sortForCompleteTree(array: firstHalf, index: (index*2) + 1)
-        result += sortForCompleteTree(array: secondHalf, index: (2*index) + 2)
-        
-        // Result will hold key,value pairs corresponding to an array index
-        result += [index:array[midpoint]]
-        return result
-    }
-    
     
     
     // MARK: Drawing
@@ -186,7 +78,7 @@ public class BSTScene: SKScene {
             
             // Calculate new point, draw edge between current and new nodes
             let newPoint = CGPoint(x: point.x - spacingWidth, y: point.y - spacingHeight)
-            self.drawEdge(from: point, to: newPoint, width: CGFloat(6 - originalHeight))
+            self.drawEdge(from: point, to: newPoint, width: 2)
             
             drawBST(tree: temp.left!,
                     within: size,
@@ -201,7 +93,7 @@ public class BSTScene: SKScene {
             
             // Calculate new point, draw edge between current and new nodes
             let newPoint = CGPoint(x: point.x + spacingWidth, y: point.y - spacingHeight)
-            self.drawEdge(from: point, to: newPoint, width: CGFloat(6 - originalHeight))
+            self.drawEdge(from: point, to: newPoint, width: 2)
             
             drawBST(tree: temp.right!,
                     within: size,
@@ -212,11 +104,5 @@ public class BSTScene: SKScene {
         
         // Add node now that traversal has exhausted itself to this Node
         drawNode(at: point, value: temp.value, radius: nodeRadius, color: nodeColor)
-    }
-}
-
-func += <K, V> ( left: inout [K:V], right: [K:V]) {
-    for (k, v) in right {
-        left.updateValue(v, forKey: k)
     }
 }

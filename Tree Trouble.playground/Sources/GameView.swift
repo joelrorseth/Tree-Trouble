@@ -9,10 +9,12 @@ public class GameView: UIViewController {
     // =====================================
     public override func viewDidLoad() {
         
+        // Underlay will take up entire Playground liveView
         let backgroundView = UIImageView(image: UIImage(named: "underlay.jpg"))
         backgroundView.isUserInteractionEnabled = true
         self.view = backgroundView
         
+        // Setup content view, disable automatic constraints
         gameView = SKView()
         gameView.translatesAutoresizingMaskIntoConstraints = false
         gameView.backgroundColor = UIColor.clear
@@ -96,12 +98,12 @@ public class GameView: UIViewController {
         // Scene must be setup after gameView size has been determined
         let scene = GameScene(size:
             CGSize(
-                width: gameView.frame.size.width, height: gameView.frame.size.height
+                width: gameView.frame.size.width,
+                height: gameView.frame.size.height
         ))
                 
         // Scene will be identical in size to gameView
         scene.scaleMode = .aspectFit
-        
         self.gameView.presentScene(scene)
     }
 }

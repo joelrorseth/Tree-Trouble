@@ -4,19 +4,27 @@ import GameplayKit
 
 public class GameScene: SKScene {
     
+    // Sound properties
+    let correctSound = SKAction.playSoundFileNamed("correct.wav", waitForCompletion: false)
+    let wrongSound = SKAction.playSoundFileNamed("wrong.wav", waitForCompletion: false)
+    let backgroundLoop = SKAudioNode(fileNamed: "loop.wav")
+    
+    // Properties tracking the incorrect node
     var selectedNode : Node?
     var currentRandomSkewedValue: Int?
     var currentRandomOriginalValue: Int?
     
+    // Properties tracking all visible BST sprites
     var currentNodes = [Node]()
     var currentEdges = [SKShapeNode]()
     
+    // Properties referencing misc. game nodes
     var background = SKSpriteNode(imageNamed: "background.png")
     var countdownNode = SKLabelNode(fontNamed: "Arial")
     var scoreNode = SKLabelNode(fontNamed: "Arial")
-    var game: Game!
     
-    var countdownValue: Int = 30 {
+    // Variables to track time, score, and update their nodes when changed
+    var countdownValue: Int = 60 {
         didSet {
             countdownNode.text = "Time left: \(countdownValue)"
         }
@@ -31,6 +39,9 @@ public class GameScene: SKScene {
     // =====================================
     // =====================================
     override public func didMove(to view: SKView) {
+        
+        // Load first level
+        presentNextLevel()
         
         // Add background image to scene as a node
         background.position = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
@@ -51,6 +62,11 @@ public class GameScene: SKScene {
         countdownNode.text = "Time left: \(countdownValue)"
         addChild(countdownNode)
         
+        // Run game sound loop forever
+        backgroundLoop.run(SKAction.changeVolume(to: Float(0.9), duration: 0))
+        self.addChild(backgroundLoop)
+        
+        // Create SKAction to decrement the time remaining every second
         let wait = SKAction.wait(forDuration: 1.0)
         let block = SKAction.run({ [unowned self] in
             
@@ -58,8 +74,6 @@ public class GameScene: SKScene {
                 self.countdownValue -= 1
             } else {
                 self.gameOver(score: self.score)
-                //self.score = 0
-                self.removeAction(forKey: "countdown")
             }
         })
         
@@ -69,33 +83,12 @@ public class GameScene: SKScene {
     
     // =====================================
     // =====================================
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    // =====================================
-    // =====================================
-    public override init(size: CGSize) {
-        super.init(size: size)
-        
-        // Create a new Game
-        game = Game(heights: [1,1,2,2,2,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4])
-        
-        self.physicsWorld.gravity = CGVector(dx: 0, dy: -9.81)
-        self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
-        self.backgroundColor = SKColor.white
-        
-        presentNextLevel()
-    }
-    
-    // =====================================
-    // =====================================
     func createRandomBST(withCount count: Int) {
         
         let nodeCount = Int(NSDecimalNumber(decimal: pow(2, count + 1))) - 1
         
         // Choose position of node that will be randomly skewed
-        let randomNodePosition = GKARC4RandomSource().nextInt(upperBound: nodeCount - 1)
+        let randomNodePosition = GKARC4RandomSource().nextInt(upperBound: nodeCount - 1) + 1
         
         var array: [Int] = []
         
@@ -146,19 +139,20 @@ public class GameScene: SKScene {
             currentRandomSkewedValue = GKARC4RandomSource().nextInt(upperBound: parentValue - 1) + 1
         }
         
-        print("Generated \(currentRandomSkewedValue!) as next incorrect node")
+        //print("DEBUG: Generated \(currentRandomSkewedValue!) as next incorrect node")
 
         
         let topHalfView = CGSize(width: self.size.width, height: self.size.height / 2)
         
         self.drawBST(tree: tree,
                      within: topHalfView,
-                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 60),
+                     at: CGPoint(x: topHalfView.width / 2, y: self.size.height - 80),
                      offset: CGFloat(tree.height()),
                      originalHeight: tree.height())
     }
     
     // =====================================
+    // Balance trees with 2^h - 1 nodes
     // =====================================
     func sortForCompleteTree(array: [Int], index: Int) -> [Int : Int] {
         
@@ -237,7 +231,7 @@ public class GameScene: SKScene {
             
             // Calculate new point, draw edge between current and new nodes
             let newPoint = CGPoint(x: point.x - spacingWidth, y: point.y - spacingHeight)
-            self.drawEdge(from: point, to: newPoint, width: CGFloat(6 - originalHeight))
+            self.drawEdge(from: point, to: newPoint, width: 2)
             
             drawBST(tree: temp.left!,
                     within: size,
@@ -252,7 +246,7 @@ public class GameScene: SKScene {
             
             // Calculate new point, draw edge between current and new nodes
             let newPoint = CGPoint(x: point.x + spacingWidth, y: point.y - spacingHeight)
-            self.drawEdge(from: point, to: newPoint, width: CGFloat(6 - originalHeight))
+            self.drawEdge(from: point, to: newPoint, width: 2)
             
             drawBST(tree: temp.right!,
                     within: size,
@@ -262,8 +256,7 @@ public class GameScene: SKScene {
         }
         
         // If this is the randomly selected node, skew its value
-        
-        // Add node now that traversal has exhausted itself to this Node
+        // Otherwise, add node to the tree
         if (tree.value == currentRandomOriginalValue) {
             
             drawNode(at: point, value: currentRandomSkewedValue!, radius: nodeRadius, color: nodeColor)
@@ -274,17 +267,18 @@ public class GameScene: SKScene {
     }
     
     
-    
+    // MARK: Game Control
     // =====================================
     // =====================================
     private func gameOver(score: Int) {
         
-        // Stop the countdown timer
+        // Stop the countdown timer and background music
         self.removeAction(forKey: "countdown")
+        self.backgroundLoop.removeFromParent()
         
-        if let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
+        if let vc = SLComposeViewController(forServiceType: SLServiceTypeTwitter) {
             vc.add(UIImage(named: "background")!)
-            vc.setInitialText("I fixed \(score) Binary Search Trees in 30 seconds in the Trouble in the Trees Challenge!")
+            vc.setInitialText("I fixed \(score) Binary Search Trees in 60 seconds in the Tree Trouble Challenge!")
             
             // Extract rootViewController to present the SLComposeViewController (social media posting)
             self.view?.window?.rootViewController?.present(vc, animated: true, completion: nil)
@@ -298,11 +292,15 @@ public class GameScene: SKScene {
         // If correct guess, increment score and load next level
         if (currentRandomSkewedValue == value) {
             score += 1
+            playSound(sound: correctSound)
+            
+            // Correct, so load next level
             presentNextLevel()
             return
         }
         
         // At this point the guess was wrong; the challenge is over!
+        playSound(sound: wrongSound)
         gameOver(score: score)
     }
     
@@ -311,8 +309,7 @@ public class GameScene: SKScene {
     private func presentNextLevel() {
         
         // Generate random BST height between 2 and 4
-        let arc4 = GKARC4RandomSource()
-        let randomHeight = arc4.nextInt(upperBound: 3) + 2
+        let randomHeight = GKARC4RandomSource().nextInt(upperBound: 3) + 2
         
         // Remove all node and edge sprites from the scene
         for node in currentNodes { node.removeFromParent() }
@@ -325,6 +322,13 @@ public class GameScene: SKScene {
         createRandomBST(withCount: randomHeight)
     }
     
+    // =====================================
+    // =====================================
+    func playSound(sound : SKAction) {
+        run(sound)
+    }
+    
+    // MARK: Touch Handling
     // =====================================
     // =====================================
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -350,3 +354,11 @@ public class GameScene: SKScene {
     }
 }
 
+// ================================================
+// Convenience function for adding dictionaries
+// ================================================
+func += <K, V> ( left: inout [K:V], right: [K:V]) {
+    for (k, v) in right {
+        left.updateValue(v, forKey: k)
+    }
+}

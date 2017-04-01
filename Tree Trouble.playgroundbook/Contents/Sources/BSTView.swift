@@ -12,24 +12,23 @@ public class BSTView: UIViewController {
         self.binarySearchTree = tree
     }
     
-    
+    // =====================================
+    // =====================================
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
-    
     
     // =====================================
     // =====================================
     public override func viewDidLoad() {
         
+        // Underlay will take up entire Playground liveView
         let backgroundView = UIImageView(image: UIImage(named: "underlay.jpg"))
         backgroundView.isUserInteractionEnabled = true
         self.view = backgroundView
         
+        // Setup content view, disable automatic constraints
         gameView = SKView()
-        
         gameView.translatesAutoresizingMaskIntoConstraints = false
         gameView.backgroundColor = UIColor.clear
         self.view.addSubview(gameView)
@@ -117,8 +116,9 @@ public class BSTView: UIViewController {
         
         // Scene will be identical in size to gameView
         scene.scaleMode = .aspectFit
-        scene.createTree(tree: self.binarySearchTree!)
         
+        // Create the Binary Search Tree that this scene will be displaying
+        scene.createTree(tree: self.binarySearchTree!)
         self.gameView.presentScene(scene)
     }
 }

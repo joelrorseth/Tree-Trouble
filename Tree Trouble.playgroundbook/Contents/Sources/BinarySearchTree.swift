@@ -47,60 +47,28 @@ public class BinarySearchTree {
         }
     }
     
-    //    // =====================================
-    //    // =====================================
-    //    public func traverseInOrder(process: (T) -> Void) {
-    //        left?.traverseInOrder(process: process)
-    //        process(value)
-    //        right?.traverseInOrder(process: process)
-    //    }
-    
     // =====================================
     // =====================================
-    public func traversePreOrder(process: (Int) -> Void) {
-        process(value)
-        left?.traversePreOrder(process: process)
-        right?.traversePreOrder(process: process)
-    }
-    
-    // =====================================
-    // =====================================
-    public func traversePostOrder(process: (Int) -> Void) {
-        left?.traversePostOrder(process: process)
-        right?.traversePostOrder(process: process)
-        process(value)
-    }
-    
     public var isRoot: Bool {
         return parent == nil
     }
     
+    // =====================================
+    // =====================================
     public var isLeaf: Bool {
         return left == nil && right == nil
     }
     
-    public var isLeftChild: Bool {
-        return parent?.left === self
-    }
-    
-    public var isRightChild: Bool {
-        return parent?.right === self
-    }
-    
+    // =====================================
+    // =====================================
     public var hasLeftChild: Bool {
         return left != nil
     }
     
+    // =====================================
+    // =====================================
     public var hasRightChild: Bool {
         return right != nil
-    }
-    
-    public var hasAnyChild: Bool {
-        return hasLeftChild || hasRightChild
-    }
-    
-    public var hasBothChildren: Bool {
-        return hasLeftChild && hasRightChild
     }
     
     // =====================================

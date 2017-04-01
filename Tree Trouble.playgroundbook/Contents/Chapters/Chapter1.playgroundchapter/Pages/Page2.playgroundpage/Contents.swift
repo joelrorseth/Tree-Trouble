@@ -4,12 +4,23 @@
 //: ## Insertion
 //: To insert a node, start at the root (the topmost node). Determine if the value of the new node is less than or greater than this node, and follow the left edge or right edge respectively. If there is no edge in this direction, create a *new edge* here and connect it to the new node!
 
-//: ## Can You Find the Missing Piece?
-//: Drag the nodes at the bottom into the correct place!
+//: Finish the code to create the tree
+var bst = BinarySearchTree(value:/*#-editable-code root node*/<#T##node##Int#>/*#-end-editable-code*/)
+
+//: Add nodes into the tree!
+bst.insert(value: /*#-editable-code number*/<#T##node##Int#>/*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*/<#T##node##Int#>/*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*/<#T##node##Int#>/*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*/<#T##node##Int#>/*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*/<#T##node##Int#>/*#-end-editable-code*/)
+bst.insert(value: /*#-editable-code number*/<#T##node##Int#>/*#-end-editable-code*/)
+
+//: [Next: Traversal and Ordering](@next)
 
 //#-hidden-code
 
 import PlaygroundSupport
-//PlaygroundPage.current.liveView =
+var bstView = BSTView(tree: bst)
+PlaygroundPage.current.liveView = bstView
 
 //#-end-hidden-code
